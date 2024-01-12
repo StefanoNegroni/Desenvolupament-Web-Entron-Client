@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Juego de Cartas Pokémon</title>
+        <style>
+            body {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                margin: 0;
+                padding: 0;
+                background-image: url('dynamax-battle.png');
+                background-size: cover;
+                text-align: center;
+            }
+    
+            h1 {
+                margin-bottom: 30px;
+                color: #fff;
+            }
+    
+            label {
+                font-size: 18px;
+                color: #fff;
+            }
+    
+            #numCards {
+                font-size: 16px;
+                padding: 8px;
+            }
+    
+            button {
+                font-size: 16px;
+                padding: 10px 20px;
+                background-color: #3498db;
+                color: #fff;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                transition: background-color 0.3s ease-in-out;
+            }
+    
+            button:hover {
+                background-color: #2980b9;
+            }
+    
+            #card-container {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 15px;
+                margin-top: 20px;
+            }
+    
+            .card {
+                border: 2px solid #3498db;
+                border-radius: 8px;
+                padding: 15px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                cursor: pointer;
+                transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+                background-color: #fff; /* Agregada esta línea para cambiar el fondo a blanco */
+            }
+    
+            .card:hover {
+                transform: scale(1.05);
+                box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            }
+    
+            .selected {
+                border-color: #e74c3c;
+            }
+    
+            .card img {
+                width: 100px;
+                height: 100px;
+                border-radius: 50%;
+                margin-bottom: 10px;
+            }
+    
+            .card p {
+                margin: 5px 0;
+                font-size: 14px;
+                color: #333;
+            }
+    
+            .battle-result {
+                font-size: 20px;
+                font-weight: bold;
+                margin-top: 20px;
+            }
+        </style>
+    </head>
+    
+<body>
+    <h1 style="margin-bottom: 50px;">Hola PokeAPI</h1>
+    <label for="numCards">Elige cuántos Pokémon quieres:</label>
+    <input type="number" id="numCards" min="1" max="10" value="5">
+    <button onclick="getAndShowCards()">Mostrar Cartas</button>
+    <audio src="pokemon-battle.mp3"></audio>
+   
+    <div id="card-container"></div>
+    <script>
+        function getAndShowCards() {
+            const numCards = document.getElementById("numCards").value;
+            if (numCards < 1 || numCards > 10) {
+                alert("Ingrese un número válido entre 1 y 10.");
+                return;
+            }
+ 
+            const cardContainer = document.getElementById("card-container");
+            cardContainer.innerHTML = ""; // Limpiar contenedor anterior
+ 
+            let selectedCards = [];
+ 
+            function getPokemonData() {
+                const promises = [];
+ 
+                for (let i = 0; i < numCards; i++) {
+                    const randomPokemonId = Math.floor(Math.random() * 898) + 1;
+                    const url = `https://pokeapi.co/api/v2/pokemon/${randomPokemonId}`;
+                    promises.push(fetch(url).then(response => response.json()));
+                }
+ 
+                Promise.all(promises)
+                    .then(pokemonDataArray => {
+                        pokemonDataArray.forEach(pokemonData => {
+                            createCard(pokemonData);
+                        });
+                    })
+                    .catch(error => console.error("Error al obtener datos de Pokémon:", error));
+            }
+ 
+            function createCard(pokemonData) {
+                const card = document.createElement("div");
+                card.classList.add("card");
+ 
+                // Añade información del Pokémon a la tarjeta
+                // Puedes personalizar esto según tus necesidades
+                card.innerHTML = `
+                    <img src="${pokemonData.sprites.front_default}" alt="${pokemonData.name}">
+                    <p>Nombre: ${pokemonData.name}</p>
+                    <p>Tipo: ${pokemonData.types[0].type.name}</p>
+                    <p>Ataque: ${pokemonData.stats[1].base_stat}</p>
+                    <p>Defensa: ${pokemonData.stats[2].base_stat}</p>
+                `;
+ 
+                card.addEventListener("click", () => toggleSelectCard(card));
+ 
+                cardContainer.appendChild(card);
+            }
+ 
+            function toggleSelectCard(card) {
+                card.classList.toggle("selected");
+ 
+                if (card.classList.contains("selected")) {
+                    selectedCards.push(card);
+                } else {
+                    selectedCards = selectedCards.filter(selectedCard => selectedCard !== card);
+                }
+ 
+                if (selectedCards.length === 2) {
+                    setTimeout(() => {
+                        performBattle(selectedCards);
+                        selectedCards.forEach(selectedCard => selectedCard.classList.remove("selected"));
+                        selectedCards = [];
+                    }, 1000);
+                }
+            }
+ 
+            function performBattle(cards) {
+                const attackerAttack = parseInt(cards[0].querySelector("p:nth-child(4)").textContent.split(":")[1]);
+                const defenderDefense = parseInt(cards[1].querySelector("p:nth-child(5)").textContent.split(":")[1]);
+ 
+                if (attackerAttack > defenderDefense) {
+                    alert(`${cards[0].querySelector("p:nth-child(2)").textContent.split(":")[1]} gana`);
+                } else if (attackerAttack < defenderDefense) {
+                    alert(`${cards[1].querySelector("p:nth-child(2)").textContent.split(":")[1]} gana`);
+                } else {
+                    alert("¡Es un empate!");
+                }
+            }
+ 
+            getPokemonData();
+        }
+    </script>
+</body>
+</html>
