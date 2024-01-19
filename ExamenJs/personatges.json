@@ -1,0 +1,12 @@
+[
+    { "nom": "Pikchu", "atac": 90, "defensa": 80, "velocitat": 10, "salut": 100, "imatge": "pikachu.jpg" },
+    { "nom": "Gyarados", "atac": 85, "defensa": 75, "velocitat": 9, "salut": 100, "imatge": "gyarados.jpg" },
+    { "nom": "Mewto", "atac": 70, "defensa": 60, "velocitat": 8, "salut": 100, "imatge": "mewto.jpg" },
+    { "nom": "Dialga", "atac": 75, "defensa": 70, "velocitat": 7, "salut": 100, "imatge": "dialga.jpg" },
+    { "nom": "Dioxis", "atac": 88, "defensa": 82, "velocitat": 9, "salut": 100, "imatge": "dioxis.jpg" },
+    { "nom": "Piplup", "atac": 86, "defensa": 88, "velocitat": 8, "salut": 100, "imatge": "piplup.jpg" },
+    { "nom": "Charizard", "atac": 20, "defensa": 30, "velocitat": 5, "salut": 100, "imatge": "Charizard.jpg" },
+    { "nom": "Rayquaza", "atac": 78, "defensa": 75, "velocitat": 7, "salut": 100, "imatge": "Rayquaza.jpg" },
+    { "nom": "Zapdos", "atac": 87, "defensa": 80, "velocitat": 9, "salut": 100, "imatge": "zapdos.jpg" },
+    { "nom": "Moltres", "atac": 92, "defensa": 85, "velocitat": 8, "salut": 100, "imatge": "moltres.jpg" }
+]
